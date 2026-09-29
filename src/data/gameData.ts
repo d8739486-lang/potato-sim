@@ -66,12 +66,13 @@ export function getCrop(id: PotatoId, era: CropEra = 'potato'): PotatoConfig {
   return eraCrops[id] || POTATOES[id];
 }
 
-export const ERA_INFO: Record<CropEra, { name: string; cropName: string; emoji: string; sprite: string; currencyEmoji: string; title: string }> = {
+export const ERA_INFO: Record<CropEra, { name: string; cropName: string; emoji: string; sprite: string; seedPacketSprite: string; currencyEmoji: string; title: string }> = {
   potato: {
     name: 'Картофельная Эра',
     cropName: 'Картошка',
     emoji: '🥔',
     sprite: '/sprites/potato_base.png',
+    seedPacketSprite: '/sprites/seed_packet_base.png',
     currencyEmoji: '🥔',
     title: 'СИМУЛЯТОР ВЫРАЩИВАНИЯ КАРТОШКИ'
   },
@@ -80,6 +81,7 @@ export const ERA_INFO: Record<CropEra, { name: string; cropName: string; emoji: 
     cropName: 'Капуста',
     emoji: '🥬',
     sprite: '/sprites/cabbage_base.png',
+    seedPacketSprite: '/sprites/seed_packet_cabbage.png',
     currencyEmoji: '🥬',
     title: 'СИМУЛЯТОР ВЫРАЩИВАНИЯ КАПУСТЫ'
   },

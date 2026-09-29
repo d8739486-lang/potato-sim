@@ -204,7 +204,7 @@ export default function Shop({ onBack }: ShopProps) {
                       src={`/sprites/seed_${potato.id}.png`} 
                       alt={potato.name} 
                       className={cn("w-20 h-20 object-contain transition-transform drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]", (!isLockedByRebirth && !outOfStockGlobal) ? "group-hover:scale-110" : "brightness-0 opacity-50")} 
-                      onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; if (!isLockedByRebirth && !outOfStockGlobal) Object.assign(e.currentTarget.style, potato.textureStyle); else e.currentTarget.style.filter = "brightness(0)"; }}
+                      onError={(e) => { e.currentTarget.src = eraInfo.seedPacketSprite; if (!isLockedByRebirth && !outOfStockGlobal) Object.assign(e.currentTarget.style, potato.textureStyle); else e.currentTarget.style.filter = "brightness(0)"; }}
                     />
                     {isLockedByRebirth ? (
                         <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80">

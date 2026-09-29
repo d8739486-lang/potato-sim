@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore, type ToolType } from '../store/gameStore';
-import { getCrop, type PotatoId } from '../data/gameData';
+import { getCrop, ERA_INFO, type PotatoId } from '../data/gameData';
 import { Hand, ArrowLeft, Backpack, Crown } from 'lucide-react';
 import { cn } from '../utils';
 import InventoryModal from './InventoryModal';
@@ -13,6 +13,7 @@ interface ToolbarProps {
 
 export default function Toolbar({ onBack }: ToolbarProps) {
   const { activeTool, setActiveTool, hotbar, selectedSeedId, inventory, currentEra } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
   const [showInventory, setShowInventory] = useState(false);
   const [showRebirthModal, setShowRebirthModal] = useState(false);
 
@@ -249,7 +250,7 @@ export default function Toolbar({ onBack }: ToolbarProps) {
                   {potato && (
                     <>
                       <div className="drag-image-container pointer-events-none mt-1">
-                        <img src={`/sprites/seed_${item}.png`} alt={potato.name} className="w-8 h-8 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; Object.assign(e.currentTarget.style, potato.textureStyle); }} title={potato.name} />
+                        <img src={`/sprites/seed_${item}.png`} alt={potato.name} className="w-8 h-8 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = eraInfo.seedPacketSprite; Object.assign(e.currentTarget.style, potato.textureStyle); }} title={potato.name} />
                       </div>
                       {(inventory?.seeds?.[item as PotatoId] ?? 0) > 0 && (
                         <div className="absolute -bottom-1 -right-1 bg-amber-500/90 px-1.5 py-0.2 rounded text-[9px] font-black text-white border border-amber-300 shadow">

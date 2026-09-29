@@ -24,6 +24,7 @@ export default function Field({ onBack }: FieldProps) {
   
   const [harvestAnimIds, setHarvestAnimIds] = useState<{ [key: string]: string }>({});
   const [shovelAnimIds, setShovelAnimIds] = useState<{ [key: string]: boolean }>({});
+  const [plantAnimIds, setPlantAnimIds] = useState<{ [key: string]: { seedId: PotatoId; key: number } }>({});
   const [hoveredIntersection, setHoveredIntersection] = useState<{x: number, y: number, radius: number} | null>(null);
   const sprinklerAudioRef = useRef<HTMLAudioElement | null>(null);
   
@@ -48,6 +49,17 @@ export default function Field({ onBack }: FieldProps) {
         return next;
       });
     }, 1000);
+  };
+
+  const playPlantAnim = (plotId: string, seedId: PotatoId) => {
+    setPlantAnimIds(prev => ({ ...prev, [plotId]: { seedId, key: Date.now() } }));
+    setTimeout(() => {
+      setPlantAnimIds(prev => {
+        const next = { ...prev };
+        delete next[plotId];
+        return next;
+      });
+    }, 950);
   };
 
   const playShovelAnim = (id: string) => {
@@ -177,12 +189,15 @@ export default function Field({ onBack }: FieldProps) {
           return;
        }
     }
-    const wasPlanted = !plot.plantedSeedId && activeTool === 'seed';
+    const { selectedSeedId } = useGameStore.getState();
+    const canPlantSeed = activeTool === 'seed' && selectedSeedId && plot.isTilled && !plot.plantedSeedId && ((useGameStore.getState().inventory?.seeds?.[selectedSeedId] ?? 0) > 0);
+    const seedBeingPlanted = selectedSeedId;
     const hadSomething = plot.plantedSeedId || plot.isTilled;
-    
+
     interactWithPlot(plotId);
     
-    if (wasPlanted) {
+    if (canPlantSeed && seedBeingPlanted) {
+       playPlantAnim(plotId, seedBeingPlanted);
        const audio = new Audio('/sfx/plant.wav');
        audio.volume = useGameStore.getState().getSoundVol(0.5);
        audio.play().catch(() => {});
@@ -480,6 +495,50 @@ export default function Field({ onBack }: FieldProps) {
                    ))}
                 </div>
               )}
+
+              {plantAnimIds[plotId] && (() => {
+                const anim = plantAnimIds[plotId];
+                const animCrop = getCrop(anim.seedId, currentEra);
+                return (
+                  <div key={anim.key} className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
+                    {/* Трясущийся пакетик семян над лункой */}
+                    <div className="absolute top-1/2 left-1/2 animate-seed-pour">
+                      <img 
+                        src={`/sprites/seed_${anim.seedId}.png`} 
+                        alt={animCrop.name}
+                        className="w-14 h-14 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
+                        onError={(e) => { 
+                          e.currentTarget.src = eraInfo.seedPacketSprite; 
+                          Object.assign(e.currentTarget.style, animCrop.textureStyle); 
+                        }}
+                      />
+                    </div>
+
+                    {/* Высыпающиеся частицы семян */}
+                    {[
+                      { sx: -16, sy: 12, delay: 0.1 },
+                      { sx: 14, sy: 8, delay: 0.15 },
+                      { sx: -8, sy: 22, delay: 0.2 },
+                      { sx: 10, sy: 20, delay: 0.25 },
+                      { sx: -2, sy: 15, delay: 0.18 },
+                      { sx: 18, sy: 26, delay: 0.28 },
+                      { sx: -14, sy: 28, delay: 0.3 }
+                    ].map((seed, i) => (
+                      <div 
+                        key={i}
+                        className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full animate-seed-scatter shadow-md"
+                        style={{
+                          backgroundColor: animCrop.color || '#eab308',
+                          border: '1px solid rgba(0,0,0,0.4)',
+                          animationDelay: `${seed.delay}s`,
+                          '--sx': `${seed.sx}px`,
+                          '--sy': `${seed.sy}px`
+                        } as any}
+                      />
+                    ))}
+                  </div>
+                );
+              })()}
 
               {harvestAnimIds[plotId] && (
                 <div className="absolute -top-10 left-1/2 -translate-x-1/2 text-green-400 font-black text-xl whitespace-nowrap animate-fade-out-up z-50 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] pointer-events-none">

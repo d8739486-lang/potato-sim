@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { getCrop } from '../data/gameData';
+import { getCrop, ERA_INFO } from '../data/gameData';
 import { createPortal } from 'react-dom';
 
 export default function UnlockModal() {
   const { recentlyUnlocked, clearRecentUnlock, currentEra } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
   const [currentUnlockId, setCurrentUnlockId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -43,7 +44,7 @@ export default function UnlockModal() {
             src={`/sprites/seed_${potato.id}.png`} 
             alt={potato.name}
             className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.3)] hover:scale-110 transition-transform cursor-pointer"
-            onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; Object.assign(e.currentTarget.style, potato.textureStyle); }}
+            onError={(e) => { e.currentTarget.src = eraInfo.seedPacketSprite; Object.assign(e.currentTarget.style, potato.textureStyle); }}
           />
         </div>
 

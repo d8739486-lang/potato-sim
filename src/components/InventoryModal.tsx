@@ -159,7 +159,7 @@ export default function InventoryModal({ onClose }: InventoryModalProps) {
                   {item && getCrop(item as PotatoId, currentEra) && (() => {
                     const pot = getCrop(item as PotatoId, currentEra);
                     return (
-                      <img src={`/sprites/seed_${item}.png`} alt="Семена" className="w-10 h-10 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; Object.assign(e.currentTarget.style, pot.textureStyle); }} />
+                      <img src={`/sprites/seed_${item}.png`} alt="Семена" className="w-10 h-10 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = eraInfo.seedPacketSprite; Object.assign(e.currentTarget.style, pot.textureStyle); }} />
                     );
                   })()}
                   {!item && <span className="text-white/20 font-black text-xl">{index + 1}</span>}
@@ -233,7 +233,7 @@ export default function InventoryModal({ onClose }: InventoryModalProps) {
                     className={cn("relative bg-black/40 border border-green-500/30 hover:bg-green-500/20 disabled:opacity-50 disabled:hover:bg-black/40 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 transition-all cursor-pointer cursor-grab active:cursor-grabbing", draggedItem === id ? 'opacity-30 scale-95 border-green-500 border-dashed' : '')}
                   >
                     <div className="drag-image-container pointer-events-none">
-                      <img src={`/sprites/seed_${id}.png`} alt={potato.name} className="w-12 h-12 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; Object.assign(e.currentTarget.style, potato.textureStyle); }} />
+                      <img src={`/sprites/seed_${id}.png`} alt={potato.name} className="w-12 h-12 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = eraInfo.seedPacketSprite; Object.assign(e.currentTarget.style, potato.textureStyle); }} />
                     </div>
                     <span className="text-[10px] font-bold text-center leading-tight uppercase" style={{ color: potato.color }}>
                       {potato.name}
