@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { Coins, Crown, ArrowUpCircle, LandPlot, RefreshCw, X, Sprout, Backpack, LayoutGrid } from 'lucide-react';
 import { cn, getRebirthCost, getRebirthReward } from '../utils';
+import { ERA_INFO } from '../data/gameData';
 
 interface RebirthModalProps {
   isOpen: boolean;
@@ -9,7 +10,8 @@ interface RebirthModalProps {
 }
 
 export const RebirthModal: React.FC<RebirthModalProps> = ({ isOpen, onClose }) => {
-  const { balance, rebirths, potatoCoins, rebirthUpgrades, performRebirth, buyRebirthUpgrade } = useGameStore();
+  const { balance, rebirths, potatoCoins, rebirthUpgrades, performRebirth, buyRebirthUpgrade, currentEra } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
 
   const [isClosing, setIsClosing] = useState(false);
 
@@ -52,7 +54,7 @@ export const RebirthModal: React.FC<RebirthModalProps> = ({ isOpen, onClose }) =
             </div>
             <div>
               <h2 className="text-3xl font-black text-white drop-shadow-md">ВРАТА ПЕРЕРОЖДЕНИЯ</h2>
-              <p className="text-indigo-300/70 font-medium">Текущая эпоха: {rebirths}</p>
+              <p className="text-indigo-300/70 font-medium">Текущее перерождение: {rebirths}</p>
             </div>
           </div>
           <button 
@@ -72,7 +74,7 @@ export const RebirthModal: React.FC<RebirthModalProps> = ({ isOpen, onClose }) =
              <div className="z-10">
                <h3 className="text-2xl font-bold text-white mb-2">Следующее Перерождение</h3>
                <p className="text-white/50 max-w-xs mx-auto mb-8">
-                 Сбросьте прогресс, чтобы разблокировать новые виды семян и получить Картоха-коины!
+                 Сбросьте урожай, чтобы разблокировать редкие сорта семян и получить Коины!
                </p>
              </div>
 
@@ -80,7 +82,7 @@ export const RebirthModal: React.FC<RebirthModalProps> = ({ isOpen, onClose }) =
                <div className="flex justify-between items-center">
                  <span className="text-white/50 font-medium">Требуется баланс:</span>
                  <span className={cn("font-black text-xl", balance >= cost ? "text-amber-400" : "text-red-400")}>
-                   {formatNum(cost)} 🥔
+                   {formatNum(cost)} {eraInfo.currencyEmoji}
                  </span>
                </div>
                  <div className="flex justify-between items-center">
