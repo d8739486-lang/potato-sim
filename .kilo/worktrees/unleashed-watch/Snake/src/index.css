@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #080c14;
+}
+
+body {
+  background-color: var(--color-background);
+  color: white;
+  margin: 0;
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Кастомный скроллбар */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  border: 2px solid #080c14; /* чтобы казался тоньше и не прилегал вплотную к краям */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(132, 204, 22, 0.5);
+}
+
+/* Кастомные ползунки с круглым элементом */
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #84cc16;
+  cursor: pointer;
+  box-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
+  margin-top: -5px; /* Выравнивание по центру полосы */
+}
+
+input[type=range]::-moz-range-thumb {
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: #84cc16;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 10px rgba(132, 204, 22, 0.6);
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #1e293b; /* slate-800 */
+  border-radius: 4px;
+}
+
+input[type=range]::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  cursor: pointer;
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+@keyframes pageFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: pageFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes pageFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(10px) scale(0.985);
+  }
+}
+
+.animate-fade-out {
+  animation: pageFadeOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Тряска камеры при столкновении */
+@keyframes cameraShake {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  10% { transform: translate(-6px, -4px) rotate(-1deg); }
+  20% { transform: translate(6px, 4px) rotate(1deg); }
+  30% { transform: translate(-8px, 2px) rotate(-0.5deg); }
+  40% { transform: translate(8px, -2px) rotate(0.5deg); }
+  50% { transform: translate(-4px, 6px) rotate(-1deg); }
+  60% { transform: translate(4px, -6px) rotate(1deg); }
+  70% { transform: translate(-3px, 3px) rotate(0deg); }
+  80% { transform: translate(3px, -3px) rotate(0deg); }
+  90% { transform: translate(-2px, 1px) rotate(0deg); }
+}
+
+.shake {
+  animation: cameraShake 0.55s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+/* Красная вспышка при смерти */
+@keyframes deathFlash {
+  0% { opacity: 0; }
+  20% { opacity: 0.45; }
+  100% { opacity: 0; }
+}
+
+.death-flash {
+  animation: deathFlash 0.6s ease-out forwards;
+}
+
+/* Частица взрыва */
+@keyframes particleBurst {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+.particle {
+  animation: particleBurst 0.5s ease-out forwards;
+}

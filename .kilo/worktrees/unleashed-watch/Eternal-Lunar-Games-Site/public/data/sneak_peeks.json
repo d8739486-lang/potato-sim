@@ -1,0 +1,48 @@
+[
+  {
+    "id": "cold_forest_sneak",
+    "slug": "cold-forest",
+    "title": "Cold Forest — Крупный мод для Minecraft",
+    "category": "mod_preview",
+    "status": "In Development",
+    "progress": 45,
+    "project_scale": "major",
+    "short_description": "Глобальная модификация на NeoForge 1.21.1, погружающая игрока в заснеженный и загадочный морозный лес с новыми механиками выживания и аномалиями.",
+    "full_content": "Мод разрабатывается на версии NeoForge 1.21.1. Включает в себя уникальные генерации биомов, структуру обледенелых руин, температурную систему и редких существ.",
+    "cover_url": "",
+    "tags": ["NeoForge", "1.21.1", "Minecraft Mod", "Cold Forest", "In Dev"],
+    "mc_version": "1.21.1",
+    "platform": "NeoForge",
+    "created_at": "2025-01-15T10:00:00Z"
+  },
+  {
+    "id": "lunar_runner_browser",
+    "slug": "lunar-runner",
+    "title": "Lunar Runner — Браузерный 2D Аркадник",
+    "category": "browser_game",
+    "status": "Testing",
+    "progress": 80,
+    "project_scale": "medium",
+    "short_description": "Динамичный браузерный раннер с таблицей лидеров и поддержкой кастомных скинов прямо в WebGL.",
+    "full_content": "Браузерная игра не требует скачивания. Работает на HTML5 / Canvas 2D.",
+    "cover_url": "",
+    "tags": ["Browser", "HTML5", "Arcade", "Canvas"],
+    "platform": "Web / Browser",
+    "created_at": "2025-02-20T12:00:00Z"
+  },
+  {
+    "id": "lunar_launcher_app",
+    "slug": "lunar-launcher",
+    "title": "Lunar Games Launcher (Beta App)",
+    "category": "app_beta",
+    "status": "In Development",
+    "progress": 35,
+    "project_scale": "mini",
+    "short_description": "Отдельное десктопное приложение-лаунчер для автообновления наших модов и удобного запуска игр.",
+    "full_content": "Нативное приложение на Electron/Tauri для ПК. Включает бета-тестирование закрытых сборщиков.",
+    "cover_url": "",
+    "tags": ["Desktop App", "Beta", "Windows", "Launcher"],
+    "platform": "Desktop (Windows)",
+    "created_at": "2025-03-10T09:00:00Z"
+  }
+]

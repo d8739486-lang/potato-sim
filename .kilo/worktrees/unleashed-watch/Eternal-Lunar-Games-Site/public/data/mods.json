@@ -1,0 +1,126 @@
+[
+  {
+    "id": "cold-forest-mod",
+    "slug": "cold-forest",
+    "title": "Cold Forest",
+    "short_description": "Глобальная зимняя модификация с уникальными морозными биомами, древними руинами, механикой холода и новыми мобами.",
+    "long_description": "# Cold Forest — Ледяные тайны неизведанного мира\n\nМодификация **Cold Forest** погружает игрока в бесконечные ледяные просторы, полные опасностей и скрытых сокровищ.\n\n### Основные особенности:\n- **Новые биомы:** Ледяной бор, Замёрзшие пустоши, Заснеженные горы с кристаллическими пещерами.\n- **Механика замерзания:** Следите за температурой персонажа, разводите костры и создавайте тёплую броню из шкур.\n- **Древние структуры:** Руины экспедиций, забытые форты и подземные святилища.\n- **Боссы и мобы:** Ледяной страж, Морозный волк и подземные теневые призраки.\n- **Магические артефакты:** Осколки вечного льда для зачарования оружия и создания посохов холода.",
+    "icon_url": null,
+    "banner_url": null,
+    "mc_versions": ["1.21.1", "1.21", "1.20.4"],
+    "platforms": ["NeoForge", "Fabric"],
+    "tags": ["World Gen", "Adventure", "Magic", "Survival", "1.21.1"],
+    "links": {
+      "source_url": "https://github.com/Eternal-Lunar/Cold-Forest",
+      "issues_url": "https://github.com/Eternal-Lunar/Cold-Forest/issues",
+      "discord_url": "https://discord.gg/eternal-lunar"
+    },
+    "file_url": "/mods/cold-forest-1.21.1-1.0.0.jar",
+    "file_size": "4.8 MB",
+    "buttons": [
+      {
+        "label": "Скачать мод (.jar)",
+        "url": "/mods/cold-forest-1.21.1-1.0.0.jar",
+        "enabled": true,
+        "style": "primary"
+      },
+      {
+        "label": "GitHub Репозиторий",
+        "url": "https://github.com/Eternal-Lunar/Cold-Forest",
+        "enabled": true,
+        "style": "secondary"
+      }
+    ],
+    "changelog": "### Версия 1.0.0-Release\n- Релиз первой публичной версии для NeoForge 1.21.1\n- Добавлены 3 уникальных биома\n- Добавлен моб Frost Stalker\n- Оптимизирована генерация чанков",
+    "downloads": 1420,
+    "followers": 380,
+    "status": "Active",
+    "created_at": "2025-01-10T12:00:00Z",
+    "updated_at": "2025-02-15T15:30:00Z",
+    "versions": [
+      {
+        "id": "cf-v100",
+        "mod_id": "cold-forest-mod",
+        "version_number": "1.0.0",
+        "mc_version": "1.21.1",
+        "platform": "NeoForge",
+        "download_url": "/mods/cold-forest-1.21.1-1.0.0.jar",
+        "file_size": "4.8 MB",
+        "release_type": "Release",
+        "release_date": "2025-02-15",
+        "changelog": "Первый стабильный релиз на 1.21.1 NeoForge",
+        "created_at": "2025-02-15T15:30:00Z"
+      },
+      {
+        "id": "cf-v090",
+        "mod_id": "cold-forest-mod",
+        "version_number": "0.9.0-beta",
+        "mc_version": "1.21",
+        "platform": "NeoForge",
+        "download_url": "/mods/cold-forest-1.21-0.9.0.jar",
+        "file_size": "4.2 MB",
+        "release_type": "Beta",
+        "release_date": "2025-01-20",
+        "changelog": "Бета-версия с тестовой генерацией структур",
+        "created_at": "2025-01-20T10:00:00Z"
+      }
+    ],
+    "gallery": [
+      {
+        "id": "cf-g1",
+        "mod_id": "cold-forest-mod",
+        "image_url": "/assets/cold_forest_screen1.webp",
+        "caption": "Заснеженный морозный лес на закате",
+        "sort_order": 1
+      }
+    ]
+  },
+  {
+    "id": "lunar-essentials-mod",
+    "slug": "lunar-essentials",
+    "title": "Lunar Essentials",
+    "short_description": "Легковесный вспомогательный мод для расширения интерфейса, быстрых горячих клавиш и оптимизации рендера.",
+    "long_description": "# Lunar Essentials\n\nМод первой необходимости для комфортной игры в Minecraft.\n\n### Функции:\n- **Удобный HUD:** отображение прочности брони, координат и направления.\n- **Менеджер инвентаря:** сортировка в один клик.\n- **Повышение FPS:** оптимизация обработки частиц и рендера мобов.",
+    "icon_url": null,
+    "banner_url": null,
+    "mc_versions": ["1.21.1", "1.20.4", "1.19.4"],
+    "platforms": ["Fabric", "NeoForge", "Forge"],
+    "tags": ["Utility", "Optimization", "HUD", "Client"],
+    "links": {
+      "source_url": "https://github.com/Eternal-Lunar/Lunar-Essentials",
+      "issues_url": "https://github.com/Eternal-Lunar/Lunar-Essentials/issues"
+    },
+    "file_url": "/mods/lunar-essentials-1.21.1.jar",
+    "file_size": "1.2 MB",
+    "buttons": [
+      {
+        "label": "Скачать мод (.jar)",
+        "url": "/mods/lunar-essentials-1.21.1.jar",
+        "enabled": true,
+        "style": "primary"
+      }
+    ],
+    "changelog": "### Версия 1.2.0\n- Добавлена поддержка 1.21.1\n- Улучшен FPS HUD",
+    "downloads": 3290,
+    "followers": 890,
+    "status": "Active",
+    "created_at": "2024-11-05T08:00:00Z",
+    "updated_at": "2025-01-10T11:00:00Z",
+    "versions": [
+      {
+        "id": "le-v120",
+        "mod_id": "lunar-essentials-mod",
+        "version_number": "1.2.0",
+        "mc_version": "1.21.1",
+        "platform": "Fabric",
+        "download_url": "/mods/lunar-essentials-1.21.1.jar",
+        "file_size": "1.2 MB",
+        "release_type": "Release",
+        "release_date": "2025-01-10",
+        "changelog": "Обновление под Minecraft 1.21.1",
+        "created_at": "2025-01-10T11:00:00Z"
+      }
+    ],
+    "gallery": []
+  }
+]

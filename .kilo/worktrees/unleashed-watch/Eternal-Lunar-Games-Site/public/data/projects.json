@@ -1,0 +1,67 @@
+[
+  {
+    "id": "pc-master-default",
+    "title": "PC Master",
+    "description": "Станьте мастером сборки ПК! Собирайте мощнейшие конфигурации, тестируйте железо и развивайте свой компьютерный бизнес.",
+    "type": "game",
+    "cover_url": "/pc_master_cover.webp",
+    "link": "/games/pc-master",
+    "status": "Active",
+    "display_type": "chapters",
+    "chapters": [
+      {
+        "title": "Глава 1",
+        "subtitle": "Начало пути",
+        "description": "Игрок успешно справился с вирусом и устроился работать, но что-то пошло не так...",
+        "link": "https://pc-master-chapter1.vercel.app",
+        "cover_url": "",
+        "available": true
+      },
+      {
+        "title": "Глава 2",
+        "subtitle": "Digital Dreams",
+        "description": "Компания Digital Dreams захватила компьютер главного героя, но ему помог его друг... но это не конец.",
+        "link": "https://pc-master-chapter2.vercel.app",
+        "cover_url": "",
+        "available": true
+      },
+      {
+        "title": "Глава 3",
+        "subtitle": "Сомнения",
+        "description": "Подозрение, что друг с этим как-то замешан...",
+        "link": "",
+        "cover_url": "",
+        "available": false
+      }
+    ],
+    "action_text": "Запустить",
+    "chapters_text": "3 главы",
+    "created_at": "2024-01-01T00:00:00Z"
+  },
+  {
+    "id": "potato-sim-default",
+    "title": "Симулятор Картошки",
+    "description": "Увлекательная казуальная игра про выращивание, улучшение и автоматизацию картофельной фермы.",
+    "type": "game",
+    "cover_url": "/potato_sim_cover.webp",
+    "link": "#",
+    "status": "Active",
+    "display_type": "simple",
+    "action_text": "Запустить",
+    "chapters_text": "Играть онлайн",
+    "created_at": "2024-01-02T00:00:00Z"
+  },
+  {
+    "id": "neon-snake-default",
+    "title": "Неоновая Змейка",
+    "description": "Классическая змейка в неоновом киберпанк стиле с динамичными эффектами и таблицей рекордов.",
+    "type": "game",
+    "cover_url": "/snake_cover.webp",
+    "link": "#",
+    "status": "Active",
+    "display_type": "simple",
+    "action_text": "Запустить",
+    "chapters_text": "Играть онлайн",
+    "created_at": "2024-01-03T00:00:00Z"
+  }
+]

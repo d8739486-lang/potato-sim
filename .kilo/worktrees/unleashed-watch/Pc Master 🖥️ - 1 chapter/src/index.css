@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-matrix: var(--matrix-color, #0DFF4A);
+  --color-matrix-dim: var(--matrix-color-dim, #00FF55);
+  --color-matrix-dark: var(--matrix-color-dark, #003311);
+  --font-matrix: "Inter", "Roboto", "Courier New", monospace;
+}
+
+@utility glow-text {
+  text-shadow: 0 0 10px var(--matrix-color), 0 0 20px rgba(0, 0, 0, 1);
+}
+
+@utility glow-box {
+  box-shadow: 0 0 20px var(--matrix-color-dark), inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Industrial Textures */
+@utility bg-metal {
+  background-image:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+    linear-gradient(rgba(0, 0, 0, 0.8), rgba(20, 20, 20, 0.95));
+  background-size: 4px 4px, 4px 4px, 4px 4px, 4px 4px, 100% 100%;
+}
+
+@utility shutter-texture {
+  background:
+    repeating-linear-gradient(0deg,
+      #1a1a1a 0px,
+      #1a1a1a 40px,
+      #0a0a0a 41px,
+      #0a0a0a 45px);
+  border-left: 2px solid #333;
+  border-right: 2px solid #333;
+  box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+}
+
+@layer base {
+  body {
+    @apply bg-[#000000] text-matrix font-matrix select-none overflow-hidden transition-colors duration-1000;
+    -webkit-user-drag: none;
+  }
+
+  /* Completely hide native cursor everywhere */
+  * {
+    cursor: none !important;
+  }
+
+  img {
+    @apply pointer-events-none;
+    -webkit-user-drag: none;
+  }
+
+  .matrix-button {
+    @apply border-2 border-matrix text-matrix px-10 py-6 uppercase font-black transition-all rounded-xl text-xl bg-[#000000];
+    @apply hover:bg-matrix hover:text-black hover:scale-105 active:scale-95 flex items-center justify-center;
+    box-shadow: 0 0 20px var(--matrix-color-dark);
+    @apply min-h-[80px] w-full max-w-[280px] mx-auto text-center leading-tight;
+  }
+}
+
+.matrix-border {
+  border: 1px solid var(--matrix-color-dark);
+}
+
+.matrix-button:hover {
+  @apply bg-matrix text-black;
+  box-shadow: 0 0 30px var(--matrix-color);
+}
+
+@keyframes spark-fly {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(var(--tw-translate-x), var(--tw-translate-y)) scale(0);
+    opacity: 0;
+  }
+}
+
+.animate-spark {
+  animation: spark-fly 0.4s ease-out forwards;
+}
