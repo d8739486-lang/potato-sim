@@ -901,22 +901,22 @@ export default function App() {
       <div className="w-full h-screen bg-[#1a110a] flex flex-col animate-fade-in text-white relative">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,var(--tw-gradient-stops))] from-amber-900/20 via-[#1a110a] to-[#1a110a] pointer-events-none" />
         
-        <header className="relative z-10 w-full p-8 flex items-center justify-between bg-black/40 border-b border-white/10 backdrop-blur-md shadow-lg">
+        <header className="relative z-10 w-full p-8 flex items-center justify-between bg-black/40 border-b border-amber-900/20 backdrop-blur-md shadow-lg">
           <div className="flex items-center gap-5">
-            <Home size={52} className="text-secondary drop-shadow-[0_0_15px_rgba(244,164,96,0.5)]" />
+            <Home size={48} className="text-[#f4a460]" />
             <div>
-              <h2 className="text-5xl font-black tracking-wide text-white drop-shadow-md">
+              <h2 className="text-4xl font-black tracking-wide text-[#fef3c7] drop-shadow-sm">
                 {t('menu.farmTitle', { name: playerName?.toUpperCase() || '' })}
               </h2>
-              <p className="text-white/50 text-xl mt-1">
+              <p className="text-[#d4b996]/70 text-lg mt-1 font-medium">
                 {t('menu.cozyCorner')}
               </p>
             </div>
           </div>
           <div className="flex items-center gap-4">
-            <div className="text-right bg-black/50 py-3 px-6 rounded-2xl border border-white/5 mr-4">
-              <div className="text-sm text-white/50 font-bold uppercase tracking-widest mb-1">{t('menu.balance')}</div>
-              <div className="text-3xl font-black text-secondary drop-shadow-[0_0_10px_rgba(244,164,96,0.5)]">{formatNumber(balance)} 🥔</div>
+            <div className="text-right bg-[#23170e]/90 py-3 px-6 rounded-2xl border border-[#5c4028] shadow-sm mr-4">
+              <div className="text-xs text-[#d4b996]/70 font-bold uppercase tracking-widest mb-1">{t('menu.balance')}</div>
+              <div className="text-3xl font-black text-amber-400">{formatNumber(balance)} 🥔</div>
             </div>
             
             <button 
@@ -954,86 +954,97 @@ export default function App() {
           </div>
         </header>
 
-        {/* Main Content - Full Screen Cards */}
-        <div className={`relative z-10 flex-1 p-10 grid gap-10 ${spaceStation?.megastructure?.stage >= 5 ? 'grid-cols-3' : 'grid-cols-2 grid-rows-2'}`}>
+        {/* Main Content - Warm Cozy Farm Cards */}
+        <div className={`relative z-10 flex-1 p-8 grid gap-8 ${spaceStation?.megastructure?.stage >= 5 ? 'grid-cols-3' : 'grid-cols-2 grid-rows-2'}`}>
           
           {/* Modals */}
           <UnlockModal />
 
-          {/* СКЛАД - Синяя тема */}
+          {/* СКЛАД - Тёплый амбарный стиль */}
           <div className="relative w-full h-full">
             <button 
               onClick={() => {
                 setGameState('warehouse');
               }}
-              className="group relative w-full h-full rounded-[2.5rem] overflow-hidden border-2 border-blue-500/30 hover:border-blue-400 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-8 bg-linear-to-b from-blue-500/10 to-transparent hover:bg-blue-500/20 shadow-[0_0_30px_rgba(59,130,246,0.05)] hover:shadow-[0_20px_50px_rgba(59,130,246,0.2)] hover:-translate-y-2">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-              <Package size={110} className="text-blue-400 group-hover:text-blue-300 transition-all duration-300 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)] relative z-10" />
+              className="group relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-[#5c4028] hover:border-[#8b5a2b] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-6 bg-[#23170e]/80 hover:bg-[#2e1d11] shadow-[0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.7)] hover:-translate-y-1">
+              <div className="absolute inset-0 bg-radial from-[#8b5a2b]/10 to-transparent pointer-events-none" />
+              
+              <div className="w-28 h-28 rounded-2xl bg-[#3a2517]/70 border border-[#6b4729]/60 flex items-center justify-center shadow-inner group-hover:scale-105 group-hover:border-[#a36c3e] transition-transform duration-300">
+                <Package size={64} className="text-[#93c5fd] group-hover:text-blue-200 transition-colors" />
+              </div>
+
               <div className="text-center z-10 px-6">
-                <span className="block text-5xl font-black text-white mb-4 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">{t('menu.warehouse')}</span>
-                <span className="text-blue-200/70 text-xl font-bold">{t('menu.warehouseDesc')}</span>
+                <span className="block text-4xl font-black text-[#fef3c7] mb-2 tracking-wide uppercase">{t('menu.warehouse')}</span>
+                <span className="text-[#d4b996]/80 text-lg font-semibold">{t('menu.warehouseDesc')}</span>
               </div>
             </button>
           </div>
 
-          {/* МАГАЗИН - Оранжевая тема */}
+          {/* МАГАЗИН - Уютная фермерская лавка */}
           <div className="relative w-full h-full">
             <button 
               onClick={() => {
                 setGameState('shop');
               }}
-              className="group relative w-full h-full rounded-[2.5rem] overflow-hidden border-2 border-amber-500/30 hover:border-amber-400 transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-8 bg-linear-to-b from-amber-500/10 to-transparent hover:bg-amber-500/20 shadow-[0_0_30px_rgba(245,158,11,0.05)] hover:shadow-[0_20px_50px_rgba(245,158,11,0.2)] hover:-translate-y-2">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-amber-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-              <Store size={110} className="text-amber-400 group-hover:text-amber-300 transition-all duration-300 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(245,158,11,0.6)] relative z-10" />
+              className="group relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-[#5c4028] hover:border-[#b47a3e] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-6 bg-[#23170e]/80 hover:bg-[#2e1d11] shadow-[0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.7)] hover:-translate-y-1">
+              <div className="absolute inset-0 bg-radial from-[#d97706]/10 to-transparent pointer-events-none" />
+
+              <div className="w-28 h-28 rounded-2xl bg-[#3a2517]/70 border border-[#6b4729]/60 flex items-center justify-center shadow-inner group-hover:scale-105 group-hover:border-[#d97706] transition-transform duration-300">
+                <Store size={64} className="text-[#fcd34d] group-hover:text-amber-200 transition-colors" />
+              </div>
+
               <div className="text-center z-10 px-6">
-                <span className="block text-5xl font-black text-white mb-4 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">{t('menu.shop')}</span>
-                <span className="text-amber-200/70 text-xl font-bold">{t('menu.shopDesc')}</span>
+                <span className="block text-4xl font-black text-[#fef3c7] mb-2 tracking-wide uppercase">{t('menu.shop')}</span>
+                <span className="text-[#d4b996]/80 text-lg font-semibold">{t('menu.shopDesc')}</span>
               </div>
             </button>
           </div>
 
-          {/* НА ПОЛЕ - Зеленая тема */}
+          {/* НА ПОЛЕ - Тёплые пахотные земли и ростки */}
           <div className="relative w-full h-full">
             <button 
               onClick={() => {
                 setGameState('field');
               }}
-              className="group relative w-full h-full rounded-[2.5rem] overflow-hidden border-2 border-accent/40 hover:border-accent transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-8 bg-linear-to-b from-accent/15 to-transparent hover:bg-accent/20 shadow-[0_0_30px_rgba(50,205,50,0.05)] hover:shadow-[0_20px_50px_rgba(50,205,50,0.2)] hover:-translate-y-2">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-accent/15 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-              <Wheat size={110} className="text-accent group-hover:text-green-300 transition-all duration-300 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(50,205,50,0.6)] relative z-10" />
+              className="group relative w-full h-full rounded-[2rem] overflow-hidden border-2 border-[#3d4d29] hover:border-[#5f7a3a] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center gap-6 bg-[#1a2312]/80 hover:bg-[#222e17] shadow-[0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.7)] hover:-translate-y-1">
+              <div className="absolute inset-0 bg-radial from-[#65a30d]/10 to-transparent pointer-events-none" />
+
+              <div className="w-28 h-28 rounded-2xl bg-[#283818]/70 border border-[#486326]/60 flex items-center justify-center shadow-inner group-hover:scale-105 group-hover:border-[#84cc16] transition-transform duration-300">
+                <Wheat size={64} className="text-[#a3e635] group-hover:text-lime-200 transition-colors" />
+              </div>
+
               <div className="text-center z-10 px-6">
-                <span className="block text-5xl font-black text-white mb-4 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)]">{t('menu.field')}</span>
-                <span className="text-green-200/70 text-xl font-bold">{t('menu.fieldDesc')}</span>
+                <span className="block text-4xl font-black text-[#fef3c7] mb-2 tracking-wide uppercase">{t('menu.field')}</span>
+                <span className="text-[#d4b996]/80 text-lg font-semibold">{t('menu.fieldDesc')}</span>
               </div>
             </button>
           </div>
 
-          {/* КОСМОДРОМ - Фиолетовая тема */}
+          {/* КОСМОДРОМ */}
           {(!spaceStation?.megastructure || spaceStation.megastructure.stage < 5) && (
             <div className="relative w-full h-full">
               <button 
                 onClick={() => setGameState('space')}
                 disabled={rebirths < 5}
-                className={`group relative w-full h-full rounded-[2.5rem] overflow-hidden border-2 transition-all duration-300 flex flex-col items-center justify-center gap-8 ${
+                className={`group relative w-full h-full rounded-[2rem] overflow-hidden border-2 transition-all duration-300 flex flex-col items-center justify-center gap-6 ${
                   rebirths >= 5 
-                    ? 'border-fuchsia-500/30 hover:border-fuchsia-400 cursor-pointer bg-gradient-to-b from-fuchsia-500/10 to-transparent hover:bg-fuchsia-500/20 shadow-[0_0_30px_rgba(217,70,239,0.05)] hover:shadow-[0_20px_50px_rgba(217,70,239,0.2)] hover:-translate-y-2'
-                    : 'border-white/10 bg-black/40 cursor-not-allowed grayscale'
+                    ? 'border-[#4a2e4a] hover:border-[#864b86] cursor-pointer bg-[#1e1220]/80 hover:bg-[#2a172d] shadow-[0_12px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_18px_40px_rgba(0,0,0,0.7)] hover:-translate-y-1'
+                    : 'border-white/10 bg-black/40 cursor-not-allowed opacity-60'
                 }`}
               >
-                {rebirths >= 5 && (
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-fuchsia-500/20 via-transparent to-transparent opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
-                )}
-                <Rocket size={110} className={`relative z-10 transition-all duration-300 ${rebirths >= 5 ? 'text-fuchsia-400 group-hover:text-fuchsia-300 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(217,70,239,0.6)]' : 'text-white/20'}`} />
+                <div className="w-28 h-28 rounded-2xl bg-[#2b172d]/70 border border-[#522d56]/60 flex items-center justify-center shadow-inner group-hover:scale-105 transition-transform duration-300">
+                  <Rocket size={64} className={`transition-colors ${rebirths >= 5 ? 'text-[#e879f9]' : 'text-white/30'}`} />
+                </div>
                 <div className="text-center z-10 px-6">
-                  <span className={`block text-5xl font-black mb-4 drop-shadow-[0_0_10px_rgba(0,0,0,0.8)] ${rebirths >= 5 ? 'text-white' : 'text-white/40'}`}>{t('menu.spaceport')}</span>
-                  <span className={`text-xl font-bold ${rebirths >= 5 ? 'text-fuchsia-200/70' : 'text-white/20'}`}>
+                  <span className={`block text-4xl font-black mb-2 tracking-wide uppercase ${rebirths >= 5 ? 'text-[#fef3c7]' : 'text-white/40'}`}>{t('menu.spaceport')}</span>
+                  <span className={`text-lg font-semibold ${rebirths >= 5 ? 'text-[#d4b996]/80' : 'text-white/30'}`}>
                     {rebirths >= 5 ? t('menu.spaceStationUnlocked') : t('menu.spaceStationLocked')}
                   </span>
                 </div>
                 {rebirths < 5 && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 backdrop-blur-sm z-20">
-                    <Store size={48} className="text-fuchsia-500/50 mb-4" />
-                    <div className="text-xl font-black text-fuchsia-400 mt-2 bg-fuchsia-900/50 px-4 py-2 rounded-xl">{t('menu.needRebirths')}</div>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/85 backdrop-blur-xs z-20">
+                    <Rocket size={40} className="text-white/30 mb-2" />
+                    <div className="text-base font-black text-amber-300 bg-amber-950/70 border border-amber-500/30 px-4 py-2 rounded-xl uppercase tracking-wider">{t('menu.needRebirths')}</div>
                   </div>
                 )}
               </button>
