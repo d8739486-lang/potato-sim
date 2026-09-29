@@ -189,23 +189,28 @@ export default function Field({ onBack }: FieldProps) {
           return;
        }
     }
-    const { selectedSeedId } = useGameStore.getState();
-    const canPlantSeed = activeTool === 'seed' && selectedSeedId && plot.isTilled && !plot.plantedSeedId && ((useGameStore.getState().inventory?.seeds?.[selectedSeedId] ?? 0) > 0);
-    const seedBeingPlanted = selectedSeedId;
-    const hadSomething = plot.plantedSeedId || plot.isTilled;
+    const plotBefore = useGameStore.getState().plots[plotId];
+    const { selectedSeedId, activeTool: currentTool } = useGameStore.getState();
+    const willPlant = currentTool === 'seed' && selectedSeedId && plotBefore?.isTilled && !plotBefore?.plantedSeedId && ((useGameStore.getState().inventory?.seeds?.[selectedSeedId] ?? 0) > 0);
+    const seedToPlant = selectedSeedId;
+    const hadSomething = plotBefore?.plantedSeedId || plotBefore?.isTilled;
 
     interactWithPlot(plotId);
     
-    if (canPlantSeed && seedBeingPlanted) {
-       playPlantAnim(plotId, seedBeingPlanted);
+    const plotAfter = useGameStore.getState().plots[plotId];
+    const didPlant = willPlant || (plotAfter?.plantedSeedId && !plotBefore?.plantedSeedId);
+
+    if (didPlant && (seedToPlant || plotAfter?.plantedSeedId)) {
+       const plantedId = (seedToPlant || plotAfter?.plantedSeedId) as PotatoId;
+       playPlantAnim(plotId, plantedId);
        const audio = new Audio('/sfx/plant.wav');
        audio.volume = useGameStore.getState().getSoundVol(0.5);
        audio.play().catch(() => {});
-    } else if (activeTool === 'hoe') {
+    } else if (currentTool === 'hoe') {
        const audio = new Audio('/sfx/hoe.wav');
        audio.volume = useGameStore.getState().getSoundVol(0.5);
        audio.play().catch(() => {});
-    } else if (activeTool === 'shovel' && hadSomething) {
+    } else if (currentTool === 'shovel' && hadSomething) {
        const updatedPlot = useGameStore.getState().plots[plotId];
        if (!updatedPlot?.plantedSeedId && !updatedPlot?.isTilled) {
          playShovelAnim(plotId);
@@ -500,13 +505,13 @@ export default function Field({ onBack }: FieldProps) {
                 const anim = plantAnimIds[plotId];
                 const animCrop = getCrop(anim.seedId, currentEra);
                 return (
-                  <div key={anim.key} className="absolute inset-0 pointer-events-none z-50 flex items-center justify-center">
+                  <div key={anim.key} className="absolute inset-0 pointer-events-none z-[100] flex items-center justify-center overflow-visible">
                     {/* Трясущийся пакетик семян над лункой */}
-                    <div className="absolute top-1/2 left-1/2 animate-seed-pour">
+                    <div className="absolute top-1/2 left-1/2 animate-seed-pour z-[101]">
                       <img 
                         src={`/sprites/seed_${anim.seedId}.png`} 
                         alt={animCrop.name}
-                        className="w-14 h-14 object-contain drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]"
+                        className="w-16 h-16 object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]"
                         onError={(e) => { 
                           e.currentTarget.src = eraInfo.seedPacketSprite; 
                           Object.assign(e.currentTarget.style, animCrop.textureStyle); 
@@ -516,20 +521,21 @@ export default function Field({ onBack }: FieldProps) {
 
                     {/* Высыпающиеся частицы семян */}
                     {[
-                      { sx: -16, sy: 12, delay: 0.1 },
-                      { sx: 14, sy: 8, delay: 0.15 },
-                      { sx: -8, sy: 22, delay: 0.2 },
-                      { sx: 10, sy: 20, delay: 0.25 },
-                      { sx: -2, sy: 15, delay: 0.18 },
-                      { sx: 18, sy: 26, delay: 0.28 },
-                      { sx: -14, sy: 28, delay: 0.3 }
+                      { sx: -18, sy: 10, delay: 0.12 },
+                      { sx: 16, sy: 6, delay: 0.18 },
+                      { sx: -10, sy: 20, delay: 0.24 },
+                      { sx: 12, sy: 18, delay: 0.3 },
+                      { sx: -3, sy: 14, delay: 0.22 },
+                      { sx: 20, sy: 24, delay: 0.34 },
+                      { sx: -15, sy: 26, delay: 0.36 }
                     ].map((seed, i) => (
                       <div 
                         key={i}
-                        className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full animate-seed-scatter shadow-md"
+                        className="absolute top-1/2 left-1/2 w-2.5 h-2.5 rounded-full animate-seed-scatter shadow-lg z-[102]"
                         style={{
                           backgroundColor: animCrop.color || '#eab308',
-                          border: '1px solid rgba(0,0,0,0.4)',
+                          boxShadow: `0 0 8px ${animCrop.color || '#eab308'}`,
+                          border: '1px solid rgba(0,0,0,0.6)',
                           animationDelay: `${seed.delay}s`,
                           '--sx': `${seed.sx}px`,
                           '--sy': `${seed.sy}px`

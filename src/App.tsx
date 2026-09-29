@@ -905,7 +905,7 @@ export default function App() {
 
               <div className="text-center z-10 px-6">
                 <span className="block text-4xl font-black text-[#fef3c7] mb-2 tracking-wide uppercase">{t('menu.warehouse')}</span>
-                <span className="text-[#d4b996]/80 text-lg font-semibold">{t('menu.warehouseDesc')}</span>
+                <span className="text-[#d4b996]/80 text-lg font-semibold">{currentEra === 'cabbage' ? 'Ваши запасы капусты' : 'Ваши запасы картофеля'}</span>
               </div>
             </button>
           </div>
