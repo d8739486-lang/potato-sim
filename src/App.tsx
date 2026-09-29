@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Settings, X, Volume2, Music, Loader2, Home, Package, Store, Wheat, Trophy, Rocket, HelpCircle, Globe } from 'lucide-react';
+import { Play, Settings, X, Volume2, Music, Loader2, Home, Package, Store, Wheat, Trophy, Rocket, HelpCircle, Globe, Monitor } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Shop from './components/Shop';
@@ -18,6 +18,7 @@ import ConfirmModal from './components/ConfirmModal';
 import SpaceStation from './components/SpaceStation';
 import SpaceCutscene from './components/SpaceCutscene';
 import EndingCutscene from './components/EndingCutscene';
+import MobileBlockerModal from './components/MobileBlockerModal';
 
 import { useTranslation } from './hooks/useTranslation';
 import { useGameStore } from './store/gameStore';
@@ -101,7 +102,11 @@ export default function App() {
     soundVolume,
     setVolumes,
     rebirths,
-    spaceStation
+    spaceStation,
+    uiScale,
+    autoScale,
+    setUiScale,
+    setAutoScale
   } = useGameStore();
 
   // Audio References
@@ -524,17 +529,39 @@ export default function App() {
     };
   }, []);
 
+  // Detect mobile / tablet devices (Android, iOS, iPad, iPhone, etc.)
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [detectedScale, setDetectedScale] = useState(1);
+
   useEffect(() => {
-    const handleFullscreenChange = () => {
-      if (!document.fullscreenElement && gameState !== 'menu' && gameState !== 'name_entry' && gameState !== 'waiting_start') {
-        toast.warning('Откройте игру во весь экран!', { duration: 5000 });
-      }
+    const checkMobile = () => {
+      const ua = navigator.userAgent || navigator.vendor || (window as any).opera || '';
+      const isMobileUA = /android|iphone|ipad|ipod|blackberry|iemobile|opera mini|mobile/i.test(ua);
+      const isTouchAndSmall = (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) && (window.innerWidth <= 850 || window.innerHeight <= 600);
+      setIsMobileDevice(Boolean(isMobileUA || isTouchAndSmall));
     };
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+
+    const updateScale = () => {
+      // Base reference is standard 1080p height (1080px) and width (1920px)
+      // On 2K (1440p) -> scale ~ 1.33, on 4K (2160p) -> scale ~ 2.0
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const scaleByH = h / 950;
+      const scaleByW = w / 1600;
+      const autoComputed = Math.max(0.75, Math.min(2.2, Math.min(scaleByH, scaleByW)));
+      setDetectedScale(autoComputed);
     };
-  }, [gameState]);
+
+    checkMobile();
+    updateScale();
+
+    window.addEventListener('resize', () => {
+      checkMobile();
+      updateScale();
+    });
+  }, []);
+
+  const effectiveScale = autoScale ? detectedScale : (uiScale / 100);
 
   const handleCloseSettings = () => {
     setIsClosingSettings(true);
@@ -686,6 +713,57 @@ export default function App() {
                   🇬🇧 English
                 </button>
               </div>
+            </div>
+
+            {/* UI Scaling / 2K & 4K Monitor Support */}
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between text-white text-xl font-bold">
+                <div className="flex items-center gap-3">
+                  <Monitor size={24} className="text-emerald-400 drop-shadow-sm" />
+                  <span>{t('settings.scaleTitle')}</span>
+                </div>
+                <span className="text-emerald-400 drop-shadow-sm font-black">
+                  {Math.round(effectiveScale * 100)}%
+                </span>
+              </div>
+
+              {/* Auto / Manual toggle */}
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setAutoScale(true)}
+                  className={`py-2.5 px-3 rounded-xl font-bold text-sm border transition-all cursor-pointer ${autoScale ? 'bg-emerald-500/30 text-emerald-200 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-black/40 text-white/50 border-white/10 hover:border-white/20'}`}
+                >
+                  {t('settings.autoScale')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAutoScale(false)}
+                  className={`py-2.5 px-3 rounded-xl font-bold text-sm border transition-all cursor-pointer ${!autoScale ? 'bg-emerald-500/30 text-emerald-200 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-black/40 text-white/50 border-white/10 hover:border-white/20'}`}
+                >
+                  {t('settings.manualScale')}
+                </button>
+              </div>
+
+              {/* Manual scale slider if auto is disabled */}
+              {!autoScale && (
+                <div className="flex flex-col gap-2 animate-fade-in">
+                  <div className="flex justify-between text-xs text-white/60 font-semibold">
+                    <span>70% (Компактный)</span>
+                    <span>100% (Стандарт)</span>
+                    <span>180% (Большой / 4K)</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="70"
+                    max="180"
+                    step="5"
+                    value={uiScale}
+                    onChange={(e) => setUiScale(Number(e.target.value))}
+                    className="w-full"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-3">
@@ -1103,41 +1181,52 @@ export default function App() {
 
   return (
     <>
-      {renderContent()}
+      {isMobileDevice && <MobileBlockerModal />}
 
-      {/* GLOBAL MODALS */}
-      {showLeaderboard && <LeaderboardModal onClose={() => setShowLeaderboard(false)} />}
-      {showHowToPlay && <HowToPlayModal onClose={() => setShowHowToPlay(false)} />}
-      {showChangelog && <ChangelogModal onClose={() => setShowChangelog(false)} />}
-      {renderSettingsModal()}
-      
-      {showChangePassword && (
-        <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
-      )}
+      <div
+        style={{
+          zoom: effectiveScale,
+          minHeight: `${100 / effectiveScale}vh`,
+          minWidth: `${100 / effectiveScale}vw`,
+        }}
+        className="w-full h-full"
+      >
+        {renderContent()}
 
-      {showDeleteAccount && (
-        <DeleteAccountModal 
-          onClose={() => setShowDeleteAccount(false)} 
-          onDeleted={() => {
-            setShowDeleteAccount(false);
-            setGameState('name_entry');
-          }}
-        />
-      )}
+        {/* GLOBAL MODALS */}
+        {showLeaderboard && <LeaderboardModal onClose={() => setShowLeaderboard(false)} />}
+        {showHowToPlay && <HowToPlayModal onClose={() => setShowHowToPlay(false)} />}
+        {showChangelog && <ChangelogModal onClose={() => setShowChangelog(false)} />}
+        {renderSettingsModal()}
+        
+        {showChangePassword && (
+          <ChangePasswordModal onClose={() => setShowChangePassword(false)} />
+        )}
 
-      {showLogoutConfirm && (
-        <ConfirmModal
-          title="Выход из аккаунта"
-          message="Вы уверены, что хотите выйти? Вы сможете зайти обратно по нику и паролю."
-          confirmText="Выйти"
-          onConfirm={() => {
-            setShowLogoutConfirm(false);
-            logout();
-          }}
-          onClose={() => setShowLogoutConfirm(false)}
-          variant="warning"
-        />
-      )}
+        {showDeleteAccount && (
+          <DeleteAccountModal 
+            onClose={() => setShowDeleteAccount(false)} 
+            onDeleted={() => {
+              setShowDeleteAccount(false);
+              setGameState('name_entry');
+            }}
+          />
+        )}
+
+        {showLogoutConfirm && (
+          <ConfirmModal
+            title="Выход из аккаунта"
+            message="Вы уверены, что хотите выйти? Вы сможете зайти обратно по нику и паролю."
+            confirmText="Выйти"
+            onConfirm={() => {
+              setShowLogoutConfirm(false);
+              logout();
+            }}
+            onClose={() => setShowLogoutConfirm(false)}
+            variant="warning"
+          />
+        )}
+      </div>
     </>
   );
 }

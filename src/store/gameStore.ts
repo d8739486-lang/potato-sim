@@ -132,9 +132,13 @@ interface GameState {
   musicVolume: number;
   soundVolume: number;
   language: 'ru' | 'en';
+  uiScale: number;
+  autoScale: boolean;
   setVolumes: (vols: Partial<{ masterVolume: number; musicVolume: number; soundVolume: number }>) => void;
   getSoundVol: (baseVol: number) => number;
   setLanguage: (lang: 'ru' | 'en') => void;
+  setUiScale: (scale: number) => void;
+  setAutoScale: (auto: boolean) => void;
 
   buyTool: (tool: 'watering_can' | 'hoe', price: number) => boolean;
   buyPlot: (x: number, y: number) => { success: boolean; cost: number };
@@ -236,8 +240,12 @@ export const useGameStore = create<GameState>()(
       musicVolume: 60,
       soundVolume: 80,
       language: 'ru',
+      uiScale: 100,
+      autoScale: true,
       setVolumes: (vols) => set(state => ({ ...state, ...vols })),
       setLanguage: (lang) => set({ language: lang }),
+      setUiScale: (scale: number) => set({ uiScale: Math.max(70, Math.min(180, scale)) }),
+      setAutoScale: (auto: boolean) => set({ autoScale: auto }),
       getSoundVol: (baseVol: number) => {
         const { masterVolume, soundVolume } = get();
         return baseVol * ((masterVolume ?? 100) / 100) * ((soundVolume ?? 80) / 100);
