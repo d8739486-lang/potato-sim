@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore, type ToolType } from '../store/gameStore';
-import { POTATOES, SPRINKLERS, type PotatoId, type SprinklerRarity } from '../data/gameData';
+import { getCrop, ERA_INFO, SPRINKLERS, type PotatoId, type SprinklerRarity } from '../data/gameData';
 import { X } from 'lucide-react';
 import { cn } from '../utils';
 
@@ -10,7 +10,8 @@ interface InventoryModalProps {
 }
 
 export default function InventoryModal({ onClose }: InventoryModalProps) {
-  const { inventory, hotbar, assignToHotbar } = useGameStore();
+  const { inventory, hotbar, assignToHotbar, currentEra } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
   const [selectedSlot, setSelectedSlot] = useState<number | null>(null);
   const [isClosing, setIsClosing] = useState(false);
   const [draggedItem, setDraggedItem] = useState<ToolType | PotatoId | null>(null);
@@ -155,9 +156,12 @@ export default function InventoryModal({ onClose }: InventoryModalProps) {
                   {item === 'watering_can' && <img src="/sprites/tool_watering_can.png" alt="Лейка" className="w-10 h-10 object-contain drop-shadow-md" />}
                   {item === 'hoe' && <img src="/sprites/tool_hoe.png" alt="Мотыга" className="w-10 h-10 object-contain drop-shadow-md" />}
                   
-                  {item && POTATOES[item as PotatoId] && (
-                    <img src={`/sprites/seed_${item}.png`} alt="Семена" className="w-10 h-10 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; Object.assign(e.currentTarget.style, POTATOES[item as PotatoId].textureStyle); }} />
-                  )}
+                  {item && getCrop(item as PotatoId, currentEra) && (() => {
+                    const pot = getCrop(item as PotatoId, currentEra);
+                    return (
+                      <img src={`/sprites/seed_${item}.png`} alt="Семена" className="w-10 h-10 object-contain drop-shadow-md" onError={(e) => { e.currentTarget.src = '/sprites/seed_packet_base.png'; Object.assign(e.currentTarget.style, pot.textureStyle); }} />
+                    );
+                  })()}
                   {!item && <span className="text-white/20 font-black text-xl">{index + 1}</span>}
                 </div>
               );
@@ -212,10 +216,10 @@ export default function InventoryModal({ onClose }: InventoryModalProps) {
           </div>
 
           <div>
-            <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider">Семена</h3>
+            <h3 className="text-xl font-bold text-white/50 mb-4 uppercase tracking-wider">Семена ({eraInfo.cropName})</h3>
             <div className="grid grid-cols-4 gap-4">
-              {Object.entries(safeSeeds).filter(([id, count]) => count > 0 && !safeHotbar.includes(id as PotatoId) && POTATOES[id as PotatoId]).map(([id, count]) => {
-                const potato = POTATOES[id as PotatoId];
+              {Object.entries(safeSeeds).filter(([id, count]) => count > 0 && !safeHotbar.includes(id as PotatoId) && getCrop(id as PotatoId, currentEra)).map(([id, count]) => {
+                const potato = getCrop(id as PotatoId, currentEra);
                 if (!potato) return null;
                 return (
                   <button 

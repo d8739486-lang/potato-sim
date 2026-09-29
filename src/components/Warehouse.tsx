@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { POTATOES, type PotatoId } from '../data/gameData';
+import { getCrop, ERA_INFO, type PotatoId } from '../data/gameData';
 import { Package, ArrowLeft } from 'lucide-react';
 import { formatNumber } from '../utils';
 
@@ -9,7 +9,8 @@ interface WarehouseProps {
 }
 
 export default function Warehouse({ onBack }: WarehouseProps) {
-  const { inventory, balance, sellHarvested, sellAllHarvested, warehouseLevel, upgradeWarehouse, rebirthUpgrades } = useGameStore();
+  const { inventory, balance, sellHarvested, sellAllHarvested, warehouseLevel, upgradeWarehouse, rebirthUpgrades, currentEra } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
   const [sellAnimId, setSellAnimId] = useState<string | null>(null);
 
   const safeHarvested = inventory?.harvested || {};
@@ -28,7 +29,7 @@ export default function Warehouse({ onBack }: WarehouseProps) {
   };
 
   const handleSell = (id: PotatoId, amount: number) => {
-    const potato = POTATOES[id];
+    const potato = getCrop(id, currentEra);
     if (!potato) return;
     sellHarvested(id, amount, potato.sellPrice);
     triggerSellAnim(id);
@@ -39,7 +40,7 @@ export default function Warehouse({ onBack }: WarehouseProps) {
   };
 
   const totalItems = Object.entries(safeHarvested as Record<string, number>).reduce((sum, [id, count]) => {
-    return POTATOES[id as PotatoId] ? sum + count : sum;
+    return getCrop(id as PotatoId, currentEra) ? sum + count : sum;
   }, 0);
 
   return (
@@ -78,7 +79,7 @@ export default function Warehouse({ onBack }: WarehouseProps) {
               disabled={balance < nextUpgradeCost}
               className="px-6 py-3 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-black rounded-xl border border-amber-500/30 transition-all cursor-pointer shadow-[0_0_15px_rgba(245,158,11,0.2)] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              УЛУЧШИТЬ ({formatNumber(nextUpgradeCost)} 🥔)
+              УЛУЧШИТЬ ({formatNumber(nextUpgradeCost)} {eraInfo.currencyEmoji})
             </button>
           )}
           {totalItems > 0 && (
@@ -93,7 +94,7 @@ export default function Warehouse({ onBack }: WarehouseProps) {
             <div className="text-sm text-white/50 font-bold uppercase tracking-widest mb-1">
               Место: <span className={totalItems >= maxCapacity ? "text-red-400" : "text-white"}>{totalItems} / {maxCapacity}</span>
             </div>
-            <div className="text-3xl font-black text-secondary drop-shadow-[0_0_10px_rgba(244,164,96,0.5)]">{formatNumber(balance)} 🥔</div>
+            <div className="text-3xl font-black text-secondary drop-shadow-[0_0_10px_rgba(244,164,96,0.5)]">{formatNumber(balance)} {eraInfo.currencyEmoji}</div>
           </div>
         </div>
       </header>
@@ -104,22 +105,22 @@ export default function Warehouse({ onBack }: WarehouseProps) {
           <div className="flex-1 flex flex-col items-center justify-center opacity-50">
             <Package size={120} className="mb-6 text-blue-500" />
             <h3 className="text-4xl font-black mb-2">СКЛАД ПУСТ</h3>
-            <p className="text-xl">Отправляйтесь на поле и соберите немного картошки!</p>
+            <p className="text-xl">Отправляйтесь на поле и соберите урожай ({eraInfo.cropName})!</p>
           </div>
         ) : (
           <div className="grid grid-cols-4 gap-6 overflow-y-auto pr-4 custom-scrollbar content-start">
-            {Object.entries(safeHarvested as Record<string, number>).filter(([id, count]) => count > 0 && POTATOES[id as PotatoId]).map(([id, count]) => {
-              const potato = POTATOES[id as PotatoId];
+            {Object.entries(safeHarvested as Record<string, number>).filter(([id, count]) => count > 0 && getCrop(id as PotatoId, currentEra)).map(([id, count]) => {
+              const potato = getCrop(id as PotatoId, currentEra);
               if (!potato) return null;
               return (
                 <div key={id} className="bg-[#101013] border border-zinc-800/60 hover:border-amber-500/30 hover:bg-[#151519] rounded-3xl p-4 flex flex-col gap-4 transition-all group animate-fade-in">
                   <div className="w-full h-32 bg-[#08080a] rounded-2xl flex items-center justify-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
                     <img 
-                      src={`/sprites/potato_${potato.id}.png`} 
+                      src={eraInfo.sprite} 
                       alt={potato.name} 
                       className="w-16 h-16 object-contain drop-shadow-md group-hover:scale-110 transition-transform" 
-                      onError={(e) => { e.currentTarget.src = '/sprites/potato_base.png'; Object.assign(e.currentTarget.style, potato.textureStyle); }}
+                      style={potato.textureStyle}
                     />
                     <div className="absolute top-2 right-2 bg-amber-500/20 px-3 py-1 rounded-xl text-amber-300 font-black border border-amber-500/30 text-lg">
                       x{count}
@@ -129,14 +130,14 @@ export default function Warehouse({ onBack }: WarehouseProps) {
                   <div className="flex-1 flex flex-col px-2">
                     <h3 className="text-xl font-black text-white mb-1 leading-tight text-center truncate" style={{ color: potato.color }} title={potato.name}>{potato.name}</h3>
                     <div className="text-center mb-2">
-                      <p className="text-white/50 text-xs uppercase font-bold">Цена за шт: <span className="text-secondary">{formatNumber(potato.sellPrice)} 🥔</span></p>
+                      <p className="text-white/50 text-xs uppercase font-bold">Цена за шт: <span className="text-secondary">{formatNumber(potato.sellPrice)} {eraInfo.currencyEmoji}</span></p>
                     </div>
                   </div>
                   
                   <div className="mt-auto grid grid-cols-2 gap-2 relative">
                     {sellAnimId === id && (
                       <div className="absolute -top-8 left-1/2 -translate-x-1/2 text-secondary font-black text-2xl animate-fade-out-up z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] pointer-events-none">
-                        +{formatNumber(potato.sellPrice)} 🥔
+                        +{formatNumber(potato.sellPrice)} {eraInfo.currencyEmoji}
                       </div>
                     )}
                     <button 
@@ -150,7 +151,7 @@ export default function Warehouse({ onBack }: WarehouseProps) {
                         onClick={() => handleSell(id as PotatoId, count)}
                         className="w-full py-3 rounded-xl font-black text-sm transition-all cursor-pointer bg-green-500/20 hover:bg-green-500/30 text-green-200 border border-green-500/30"
                       >
-                        ВСЕ ({formatNumber(count * potato.sellPrice)} 🥔)
+                        ВСЕ ({formatNumber(count * potato.sellPrice)} {eraInfo.currencyEmoji})
                       </button>
                     </div>
                   </div>

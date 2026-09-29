@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore, type ToolType } from '../store/gameStore';
-import { POTATOES, type PotatoId } from '../data/gameData';
+import { getCrop, type PotatoId } from '../data/gameData';
 import { Hand, ArrowLeft, Backpack, Crown } from 'lucide-react';
 import { cn } from '../utils';
 import InventoryModal from './InventoryModal';
@@ -12,7 +12,7 @@ interface ToolbarProps {
 }
 
 export default function Toolbar({ onBack }: ToolbarProps) {
-  const { activeTool, setActiveTool, hotbar, selectedSeedId, inventory } = useGameStore();
+  const { activeTool, setActiveTool, hotbar, selectedSeedId, inventory, currentEra } = useGameStore();
   const [showInventory, setShowInventory] = useState(false);
   const [showRebirthModal, setShowRebirthModal] = useState(false);
 
@@ -217,7 +217,7 @@ export default function Toolbar({ onBack }: ToolbarProps) {
             {hotbar.map((item, index) => {
               const isTool = item === 'shovel' || item === 'watering_can' || item === 'hoe' || item === 'hand';
               const isSeed = item && !isTool;
-              const potato = isSeed ? POTATOES[item as PotatoId] : null;
+              const potato = isSeed ? getCrop(item as PotatoId, currentEra) : null;
               
               const isActive = isSeed && activeTool === 'seed' && selectedSeedId === item;
 

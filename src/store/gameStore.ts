@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { toast } from 'sonner';
-import { POTATOES, type PotatoId, type SprinklerRarity } from '../data/gameData';
+import { POTATOES, type PotatoId, type SprinklerRarity, type CropEra } from '../data/gameData';
 import { getRebirthCost, getRebirthReward, getRebirthStartingBalance } from '../utils';
 
 export function getWateringBoostPercentage(tier: number): number {
@@ -101,7 +101,11 @@ interface GameState {
   shopOverrides: Record<string, { price: number; hidden: boolean; stock: number; is_unlimited: boolean }> | null;
   potatoRainConfig: { duration: number; bonus: number; color: string; message: string; musicUrl: string; active: boolean } | null;
   spaceStation: SpaceStationState;
+  currentEra: CropEra;
+  evolutionStage: number;
   
+  evolveToNextEra: () => void;
+  setCropEra: (era: CropEra) => void;
   addCoins: (amount: number) => void;
   setPlayerName: (name: string) => void;
   setSessionId: (id: string | null) => void;
@@ -230,6 +234,34 @@ export const useGameStore = create<GameState>()(
         relays: { count: 0, level: 1 },
         coinExtractors: { count: 0, level: 1 },
         megastructure: { stage: 0 },
+      },
+      currentEra: 'potato',
+      evolutionStage: 1,
+
+      evolveToNextEra: () => {
+        set(state => ({
+          currentEra: 'cabbage',
+          evolutionStage: Math.max(state.evolutionStage || 1, 2),
+          // Clear current crops on field & seeds for new era
+          inventory: {
+            ...state.inventory,
+            seeds: { common: 5 } as Record<PotatoId, number>,
+            harvested: {} as Record<PotatoId, number>,
+          },
+          plots: {},
+          unlockedPotatoes: ['common'],
+          everUnlockedPotatoes: ['common'],
+          balance: Math.max(state.balance, 50),
+          spaceStation: {
+            ...state.spaceStation,
+            megastructure: { stage: 0 }
+          }
+        }));
+        get().addLog('🚀 ЭВОЛЮЦИЯ СОВЕРШЕНА! Добро пожаловать в Капустную Эпоху 🥬', 'success');
+      },
+
+      setCropEra: (era: CropEra) => {
+        set({ currentEra: era });
       },
 
       masterVolume: 100,

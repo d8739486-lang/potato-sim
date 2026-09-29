@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
 import { X, Sparkles, Coins, Key, ShieldAlert } from 'lucide-react';
 import { toast } from 'sonner';
-import { POTATOES, SPRINKLERS, type PotatoId, type SprinklerRarity } from '../data/gameData';
+import { getCrops, getCrop, ERA_INFO, SPRINKLERS, type PotatoId, type SprinklerRarity } from '../data/gameData';
 import { supabase } from '../core/supabase';
 
 export default function PersonalCheatModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const { playerName, inventory } = useGameStore();
+  const { playerName, inventory, currentEra } = useGameStore();
+  const currentCrops = getCrops(currentEra);
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
 
   const [addBalance, setAddBalance] = useState('1000000');
   const [addCoins, setAddCoins] = useState('1000');
@@ -197,6 +199,7 @@ export default function PersonalCheatModal() {
     const amount = parseInt(seedAmount);
     if (isNaN(amount) || amount <= 0) return;
 
+    const crop = getCrop(seedId, currentEra);
     await updatePlayerInventoryInDb(
       targetSeedPlayerName,
       (inv) => {
@@ -205,7 +208,7 @@ export default function PersonalCheatModal() {
         inv.seeds = seeds;
         return inv;
       },
-      `🌱 Выдано ${amount} семян (${POTATOES[seedId]?.name})`
+      `🌱 Выдано ${amount} семян (${crop?.name})`
     );
   };
 
@@ -213,6 +216,7 @@ export default function PersonalCheatModal() {
     const amount = parseInt(potatoAmount);
     if (isNaN(amount) || amount <= 0) return;
 
+    const crop = getCrop(potatoId, currentEra);
     await updatePlayerInventoryInDb(
       targetPotatoPlayerName,
       (inv) => {
@@ -221,23 +225,23 @@ export default function PersonalCheatModal() {
         inv.harvested = harvested;
         return inv;
       },
-      `🥔 Выдано ${amount} ${POTATOES[potatoId]?.name}`
+      `${eraInfo.emoji} Выдано ${amount} ${crop?.name}`
     );
   };
 
   const unlockAllPotatoes = async () => {
-    const allIds = Object.keys(POTATOES) as PotatoId[];
+    const allIds = Object.keys(currentCrops) as PotatoId[];
     useGameStore.setState({ 
       unlockedPotatoes: allIds,
       everUnlockedPotatoes: Array.from(new Set([...useGameStore.getState().everUnlockedPotatoes, ...allIds])) as PotatoId[]
     });
     await saveCheatStateToDb();
-    toast.success('🔓 Все сорта картофеля разблокированы!');
+    toast.success(`🔓 Все сорта (${eraInfo.cropName}) разблокированы!`);
   };
 
   const give1000AllPotatoes = async () => {
     const newHarvested = { ...inventory.harvested };
-    const allIds = Object.keys(POTATOES) as PotatoId[];
+    const allIds = Object.keys(currentCrops) as PotatoId[];
     allIds.forEach(id => {
       newHarvested[id] = (newHarvested[id] || 0) + 1000;
     });
@@ -246,7 +250,7 @@ export default function PersonalCheatModal() {
       inventory: { ...inventory, harvested: newHarvested }
     });
     await saveCheatStateToDb();
-    toast.success('📦 Выдано по 1000 штук каждого сорта картошки!');
+    toast.success(`📦 Выдано по 1000 штук каждого сорта (${eraInfo.cropName})!`);
   };
 
 
@@ -564,7 +568,7 @@ export default function PersonalCheatModal() {
           {/* Выдать Семена */}
           <div className="bg-black/40 border border-white/10 rounded-2xl p-4 flex flex-col gap-3">
             <h3 className="text-xl font-bold text-fuchsia-400 flex items-center gap-2">
-              🌱 Выдать Семена
+              🌱 Выдать Семена ({eraInfo.cropName})
             </h3>
             
             <input 
@@ -581,7 +585,7 @@ export default function PersonalCheatModal() {
               onChange={(e) => setSeedId(e.target.value as PotatoId)}
               className="bg-black/50 border border-white/20 rounded-lg p-2 text-white font-bold focus:border-fuchsia-500 focus:outline-none"
             >
-              {Object.values(POTATOES).map(p => (
+              {Object.values(currentCrops).map(p => (
                 <option key={p.id} value={p.id}>{p.name}</option>
               ))}
             </select>
@@ -621,16 +625,16 @@ export default function PersonalCheatModal() {
             </div>
           </div>
 
-          {/* Картошка на склад */}
+          {/* Урожай на склад */}
           <div className="bg-black/40 border border-white/10 rounded-2xl p-4 flex flex-col gap-3 col-span-2">
             <h3 className="text-xl font-bold text-fuchsia-400 flex items-center gap-2">
-              🥔 Выдать Картошку на склад
+              {eraInfo.emoji} Выдать {eraInfo.cropName} на склад
             </h3>
             
             <div className="flex gap-4">
               {/* Сетка иконок */}
               <div className="flex-1 grid grid-cols-6 gap-2 max-h-48 overflow-y-auto custom-scrollbar pr-2">
-                {Object.values(POTATOES).map(p => (
+                {Object.values(currentCrops).map(p => (
                   <button 
                     key={p.id}
                     onClick={() => setPotatoId(p.id)}
@@ -642,10 +646,10 @@ export default function PersonalCheatModal() {
                     title={p.name}
                   >
                     <img 
-                      src={`/sprites/potato_${p.id}.png`} 
+                      src={eraInfo.sprite} 
                       alt={p.name} 
                       className="w-10 h-10 object-contain drop-shadow-md"
-                      onError={(e) => { e.currentTarget.src = '/sprites/potato_base.png'; Object.assign(e.currentTarget.style, p.textureStyle); }}
+                      style={p.textureStyle}
                     />
                   </button>
                 ))}
@@ -654,7 +658,7 @@ export default function PersonalCheatModal() {
               {/* Управление выдачей */}
               <div className="w-48 flex flex-col gap-2 shrink-0">
                 <div className="text-center font-bold text-white mb-2">
-                  {POTATOES[potatoId]?.name}
+                  {getCrop(potatoId, currentEra)?.name}
                 </div>
                 <input 
                   type="text" 

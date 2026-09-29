@@ -24,6 +24,7 @@ import { useTranslation } from './hooks/useTranslation';
 import { useGameStore } from './store/gameStore';
 import { supabase } from './core/supabase';
 import { formatNumber } from './utils';
+import { ERA_INFO } from './data/gameData';
 
 // Critical assets needed immediately for the initial screen and main menu
 const CRITICAL_IMAGE_ASSETS = [
@@ -102,8 +103,10 @@ export default function App() {
     soundVolume,
     setVolumes,
     rebirths,
-    spaceStation
+    spaceStation,
+    currentEra
   } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
 
   // Audio References
   const menuAudioRef = useRef<HTMLAudioElement | null>(null);
@@ -843,7 +846,7 @@ export default function App() {
           <div className="flex items-center gap-4">
             <div className="text-right bg-[#23170e]/90 py-3 px-6 rounded-2xl border border-[#5c4028] shadow-sm mr-4">
               <div className="text-xs text-[#d4b996]/70 font-bold uppercase tracking-widest mb-1">{t('menu.balance')}</div>
-              <div className="text-3xl font-black text-amber-400">{formatNumber(balance)} 🥔</div>
+              <div className="text-3xl font-black text-amber-400">{formatNumber(balance)} {eraInfo.currencyEmoji}</div>
             </div>
             
             <button 
@@ -1066,10 +1069,10 @@ export default function App() {
             СИМУЛЯТОР
           </h1>
           <h2 className="text-2xl font-bold text-secondary drop-shadow-[0_2px_2px_rgba(0,0,0,0.8)] tracking-widest mt-3 uppercase">
-            ВЫРАЩИВАНИЯ КАРТОШКИ
+            {currentEra === 'cabbage' ? 'ВЫРАЩИВАНИЯ КАПУСТЫ' : 'ВЫРАЩИВАНИЯ КАРТОШКИ'}
           </h2>
           <div className="text-6xl mt-6 animate-bounce drop-shadow-xl cursor-default">
-            🥔
+            {eraInfo.emoji}
           </div>
         </div>
         

@@ -32,6 +32,59 @@ export const POTATOES: Record<PotatoId, PotatoConfig> = {
   infinity: { id: 'infinity', name: 'Картошка Бесконечности', buyPrice: 1000000000, sellPrice: 2500000000, growTimeSec: 3600, color: '#8a2be2', emoji: '🌌', textureStyle: { filter: 'sepia(1) hue-rotate(250deg) saturate(5) brightness(1.3) drop-shadow(0 0 60px rgba(138,43,226,1))' }, tier: 15 },
 };
 
+export type CropEra = 'potato' | 'cabbage';
+
+export const CABBAGES: Record<PotatoId, PotatoConfig> = {
+  common: { id: 'common', name: 'Белокочанная капуста', buyPrice: 4, sellPrice: 10, growTimeSec: 4, color: '#4ade80', emoji: '🥬', textureStyle: { filter: 'hue-rotate(60deg) saturate(1.5) brightness(1.1)' }, tier: 1 },
+  pink: { id: 'pink', name: 'Краснокочанная капуста', buyPrice: 20, sellPrice: 50, growTimeSec: 6, color: '#e879f9', emoji: '🥬', textureStyle: { filter: 'sepia(0.8) hue-rotate(280deg) saturate(2.2) brightness(1.1)' }, tier: 2 },
+  yellow: { id: 'yellow', name: 'Савойская капуста', buyPrice: 100, sellPrice: 240, growTimeSec: 12, color: '#fef08a', emoji: '🥬', textureStyle: { filter: 'sepia(0.6) hue-rotate(40deg) saturate(2) brightness(1.2)' }, tier: 3 },
+  sweet: { id: 'sweet', name: 'Пекинская капуста', buyPrice: 400, sellPrice: 900, growTimeSec: 18, color: '#86efac', emoji: '🥬', textureStyle: { filter: 'hue-rotate(80deg) saturate(1.8) brightness(1.2)', transform: 'scaleY(1.2)' }, tier: 4 },
+  white: { id: 'white', name: 'Цветная капуста', buyPrice: 1600, sellPrice: 3600, growTimeSec: 24, color: '#f8fafc', emoji: '🥦', textureStyle: { filter: 'grayscale(1) brightness(1.5)' }, tier: 5 },
+  blue: { id: 'blue', name: 'Брокколи Нептуна', buyPrice: 6000, sellPrice: 13000, growTimeSec: 35, color: '#38bdf8', emoji: '🥦', textureStyle: { filter: 'hue-rotate(170deg) saturate(2.5) brightness(1.1)' }, tier: 6 },
+  giant: { id: 'giant', name: 'Гигантский Кочан', buyPrice: 20000, sellPrice: 45000, growTimeSec: 50, color: '#16a34a', emoji: '🥬', textureStyle: { filter: 'hue-rotate(70deg) saturate(2) brightness(0.9)', transform: 'scale(1.4)' }, tier: 7 },
+  copper: { id: 'copper', name: 'Бронзовая капуста', buyPrice: 80000, sellPrice: 170000, growTimeSec: 65, color: '#b45309', emoji: '🥬', textureStyle: { filter: 'sepia(1) hue-rotate(-10deg) saturate(2) brightness(0.9) drop-shadow(0 0 15px rgba(180,83,9,0.8))' }, tier: 8 },
+  silver: { id: 'silver', name: 'Серебряный Кочан', buyPrice: 300000, sellPrice: 650000, growTimeSec: 95, color: '#e2e8f0', emoji: '🥬', textureStyle: { filter: 'grayscale(1) brightness(1.5) drop-shadow(0 0 20px rgba(226,232,240,0.8))' }, tier: 9 },
+  gold: { id: 'gold', name: 'Золотая Капуста', buyPrice: 1000000, sellPrice: 2200000, growTimeSec: 130, color: '#fbbf24', emoji: '🥬', textureStyle: { filter: 'sepia(1) hue-rotate(10deg) saturate(4) brightness(1.3) drop-shadow(0 0 30px rgba(251,191,36,0.9))' }, tier: 10 },
+  emerald: { id: 'emerald', name: 'Изумрудная Капуста', buyPrice: 4000000, sellPrice: 9000000, growTimeSec: 190, color: '#10b981', emoji: '🥬', textureStyle: { filter: 'hue-rotate(90deg) saturate(3) brightness(1.2) drop-shadow(0 0 25px rgba(16,185,129,0.9))' }, tier: 11 },
+  ruby: { id: 'ruby', name: 'Рубиновая Капуста', buyPrice: 20000000, sellPrice: 50000000, growTimeSec: 320, color: '#f43f5e', emoji: '🥬', textureStyle: { filter: 'hue-rotate(300deg) saturate(4) brightness(1.2) drop-shadow(0 0 30px rgba(244,63,94,0.9))' }, tier: 12 },
+  diamond: { id: 'diamond', name: 'Алмазный Кочан', buyPrice: 100000000, sellPrice: 250000000, growTimeSec: 620, color: '#7dd3fc', emoji: '💎', textureStyle: { filter: 'grayscale(0.6) brightness(1.7) hue-rotate(160deg) saturate(2.5) drop-shadow(0 0 40px rgba(125,211,252,1))' }, tier: 13 },
+  radioactive: { id: 'radioactive', name: 'Биолюминесцентная Капуста', buyPrice: 500000000, sellPrice: 1200000000, growTimeSec: 1900, color: '#22c55e', emoji: '☢️', textureStyle: { filter: 'hue-rotate(80deg) saturate(7) brightness(1.6) drop-shadow(0 0 50px rgba(34,197,94,1))' }, tier: 14 },
+  infinity: { id: 'infinity', name: 'Космическая Капуста Бесконечности', buyPrice: 2000000000, sellPrice: 5000000000, growTimeSec: 3600, color: '#c084fc', emoji: '🌌', textureStyle: { filter: 'hue-rotate(250deg) saturate(5) brightness(1.4) drop-shadow(0 0 60px rgba(192,132,252,1))' }, tier: 15 },
+};
+
+export const CROPS_BY_ERA: Record<CropEra, Record<PotatoId, PotatoConfig>> = {
+  potato: POTATOES,
+  cabbage: CABBAGES,
+};
+
+export function getCrops(era: CropEra = 'potato'): Record<PotatoId, PotatoConfig> {
+  return CROPS_BY_ERA[era] || POTATOES;
+}
+
+export function getCrop(id: PotatoId, era: CropEra = 'potato'): PotatoConfig {
+  const eraCrops = getCrops(era);
+  return eraCrops[id] || POTATOES[id];
+}
+
+export const ERA_INFO: Record<CropEra, { name: string; cropName: string; emoji: string; sprite: string; currencyEmoji: string; title: string }> = {
+  potato: {
+    name: 'Картофельная Эра',
+    cropName: 'Картошка',
+    emoji: '🥔',
+    sprite: '/sprites/potato_base.png',
+    currencyEmoji: '🥔',
+    title: 'СИМУЛЯТОР ВЫРАЩИВАНИЯ КАРТОШКИ'
+  },
+  cabbage: {
+    name: 'Капустная Эволюция',
+    cropName: 'Капуста',
+    emoji: '🥬',
+    sprite: '/sprites/cabbage_base.png',
+    currencyEmoji: '🥬',
+    title: 'СИМУЛЯТОР ВЫРАЩИВАНИЯ КАПУСТЫ'
+  },
+};
+
 export type SprinklerRarity = 'common' | 'rare' | 'epic' | 'mythic' | 'legendary';
 
 export interface SprinklerConfig {

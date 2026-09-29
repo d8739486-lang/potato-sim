@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo, useRef } from 'react';
 import { useGameStore, type ToolType } from '../store/gameStore';
-import { POTATOES, SPRINKLERS, type PotatoId } from '../data/gameData';
+import { getCrop, ERA_INFO, SPRINKLERS, type PotatoId } from '../data/gameData';
 import Toolbar from './Toolbar';
 import { Lock } from 'lucide-react';
 import { cn } from '../utils';
@@ -17,7 +17,8 @@ interface FieldProps {
 }
 
 export default function Field({ onBack }: FieldProps) {
-  const { plots, sprinklers, gridRadius, unlockedPlots, interactWithPlot, interactWithIntersection, harvestPlot, buyPlot, rebirthUpgrades } = useGameStore();
+  const { plots, sprinklers, gridRadius, unlockedPlots, interactWithPlot, interactWithIntersection, harvestPlot, buyPlot, rebirthUpgrades, currentEra } = useGameStore();
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
   const timeWarpMultiplier = 1 - ((rebirthUpgrades?.timeWarpLevel || 0) * 0.05);
   const [, setTick] = useState(0);
   
@@ -137,7 +138,7 @@ export default function Field({ onBack }: FieldProps) {
     const plot = plots[plotId] || { id: plotId, isWatered: false, isTilled: false, tilledUsesLeft: 0, plantedSeedId: null, plantedAt: null, sprinklerId: null };
 
     if (activeTool === 'hand' && plot.plantedSeedId && plot.plantedAt) {
-       const potato = POTATOES[plot.plantedSeedId];
+       const potato = getCrop(plot.plantedSeedId, currentEra);
        const waterMultiplier = plot.isWatered ? 0.8 : 1.0;
        const isReady = Date.now() >= plot.plantedAt + (potato.growTimeSec * 1000 * timeWarpMultiplier * waterMultiplier);
        if (isReady) {
@@ -349,7 +350,7 @@ export default function Field({ onBack }: FieldProps) {
           const plotId = `${x}_${y}`;
           const plot = plots[plotId];
           
-          let potato = plot?.plantedSeedId ? POTATOES[plot.plantedSeedId] : null;
+          let potato = plot?.plantedSeedId ? getCrop(plot.plantedSeedId, currentEra) : null;
           let isReady = false;
 
           if (potato && plot?.plantedAt) {
@@ -371,7 +372,7 @@ export default function Field({ onBack }: FieldProps) {
                  key={plotId}
                  onClick={() => {
                    const { success, cost: buyCost } = buyPlot(x, y);
-                   if (!success) toast.error(`Недостаточно картошки! Нужно ${buyCost} 🥔`);
+                   if (!success) toast.error(`Недостаточно ${eraInfo.cropName.toLowerCase()}! Нужно ${buyCost} ${eraInfo.currencyEmoji}`);
                  }}
                  className={cn(
                     "clickable-element absolute w-[120px] h-[120px] rounded-2xl cursor-pointer transition-colors border-4 flex flex-col items-center justify-center gap-2 z-0",
@@ -384,7 +385,7 @@ export default function Field({ onBack }: FieldProps) {
                >
                  <Lock size={32} className="text-white/30 mb-1" />
                  <div className="bg-black/60 px-3 py-1 rounded-lg text-amber-400 font-black text-sm whitespace-nowrap drop-shadow-md border border-amber-500/30">
-                    {cost.toLocaleString()} 🥔
+                    {cost.toLocaleString()} {eraInfo.currencyEmoji}
                  </div>
                </div>
              )
@@ -448,7 +449,7 @@ export default function Field({ onBack }: FieldProps) {
                         </div>
                      ) : (
                         <img 
-                          src={`/sprites/potato_base.png`} 
+                          src={eraInfo.sprite} 
                           alt={potato.name} 
                           className="w-16 h-16 object-contain transition-all duration-300 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] animate-bounce hover:scale-110"
                           style={potato.textureStyle}

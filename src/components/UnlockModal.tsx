@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { POTATOES } from '../data/gameData';
+import { getCrop } from '../data/gameData';
 import { createPortal } from 'react-dom';
 
 export default function UnlockModal() {
-  const { recentlyUnlocked, clearRecentUnlock } = useGameStore();
+  const { recentlyUnlocked, clearRecentUnlock, currentEra } = useGameStore();
   const [currentUnlockId, setCurrentUnlockId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -23,7 +23,7 @@ export default function UnlockModal() {
 
   if (!currentUnlockId) return null;
 
-  const potato = POTATOES[currentUnlockId as keyof typeof POTATOES];
+  const potato = getCrop(currentUnlockId as any, currentEra);
   if (!potato) return null;
 
   return createPortal(

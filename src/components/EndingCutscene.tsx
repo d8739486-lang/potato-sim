@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { cn } from '../utils';
+import { useGameStore } from '../store/gameStore';
 
 interface EndingCutsceneProps {
   onComplete?: () => void;
@@ -84,17 +85,38 @@ const EndingCutscene: React.FC<EndingCutsceneProps> = ({ onComplete }) => {
             ПОЗДРАВЛЯЕМ!
           </h1>
           <p className="text-xl sm:text-2xl text-gray-200 leading-relaxed mb-8 max-w-3xl">
-            Вы успешно построили Великую Картофельную Мегаструктуру. 
-            Бесконечная энергия Сферы Дайсона навсегда решила энергетический кризис человечества.
-            Картофель стал главным источником жизни и света во Вселенной!
+            Вы построили Великую Мегаструктуру и постигли вершину космического земледелия!
+            Космический корабль готов перенести ваше семя сквозь червоточину в новую эру.
           </p>
+
+          <div className="bg-emerald-950/60 border-2 border-emerald-500/40 rounded-2xl p-6 mb-8 max-w-2xl text-center shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+            <span className="text-3xl mb-2 block">🥬</span>
+            <h3 className="text-2xl font-black text-emerald-400 mb-2 uppercase tracking-wider">
+              1-я ЭВОЛЮЦИЯ: КАПУСТНАЯ ЭРА
+            </h3>
+            <p className="text-emerald-200/90 font-medium text-base">
+              Вселенная открыла новый уровень эволюции: теперь вы выращиваете <strong>Капусту</strong>!
+              Вас ждут новые сорта капусты, увеличенная прибыль, свежие аватарки и космические рекорды!
+            </p>
+          </div>
           
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-4 justify-center">
+            <button 
+              onClick={() => {
+                useGameStore.getState().evolveToNextEra();
+                handleContinue();
+              }}
+              className="px-8 py-5 bg-gradient-to-r from-emerald-600 to-green-500 hover:from-emerald-500 hover:to-green-400 text-[#091e05] font-black text-2xl rounded-2xl transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-[0_0_35px_rgba(16,185,129,0.6)] flex items-center gap-3 uppercase tracking-wider"
+            >
+              <span>🥬</span>
+              <span>НАЧАТЬ ЭВОЛЮЦИЮ (КАПУСТА)</span>
+            </button>
+
             <button 
               onClick={handleContinue}
-              className="px-8 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl text-white font-bold text-xl transition-all hover:scale-105 cursor-pointer backdrop-blur-md"
+              className="px-6 py-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-2xl text-white font-bold text-lg transition-all hover:scale-105 cursor-pointer backdrop-blur-md"
             >
-              ПРОДОЛЖИТЬ ИГРУ
+              ОСТАТЬСЯ НА КАРТОФЕЛЕ
             </button>
           </div>
         </div>

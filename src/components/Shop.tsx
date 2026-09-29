@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useGameStore } from '../store/gameStore';
-import { POTATOES, SPRINKLERS, type PotatoId, type SprinklerRarity } from '../data/gameData';
+import { getCrops, ERA_INFO, SPRINKLERS, type PotatoId, type SprinklerRarity } from '../data/gameData';
 import { Store, Clock, ArrowLeft } from 'lucide-react';
 import { cn, formatNumber } from '../utils';
 
@@ -17,7 +17,9 @@ export default function Shop({ onBack }: ShopProps) {
   const [timeLeft, setTimeLeft] = useState<string>('');
   const [buyAnimId, setBuyAnimId] = useState<string | null>(null);
   
-  const { balance, buySeed, buySprinkler, buyTool, inventory, shopState, refreshShopIfNeeded, rebirths, shopOverrides } = useGameStore();
+  const { balance, buySeed, buySprinkler, buyTool, inventory, shopState, refreshShopIfNeeded, rebirths, shopOverrides, currentEra } = useGameStore();
+  const currentCrops = getCrops(currentEra);
+  const eraInfo = ERA_INFO[currentEra] || ERA_INFO.potato;
 
   const getMaxTier = (rebirths: number) => {
     if (rebirths === 0) return 9;
@@ -183,7 +185,7 @@ export default function Shop({ onBack }: ShopProps) {
         <div className="flex-1 overflow-y-auto pr-4 custom-scrollbar">
           {activeTab === 'seeds' && (
             <div className="grid grid-cols-3 gap-6">
-              {Object.values(POTATOES).map((potato, index) => {
+              {Object.values(currentCrops).map((potato, index) => {
                 const maxTier = getMaxTier(rebirths);
                 const isLockedByRebirth = potato.tier > maxTier;
                 const override = shopOverrides?.[potato.id];
@@ -227,7 +229,7 @@ export default function Shop({ onBack }: ShopProps) {
                       <div className="w-px h-8 bg-zinc-800 mx-1" />
                       <div className="text-center w-full">
                         <div className="text-[10px] text-zinc-500 font-bold uppercase mb-1">Продажа</div>
-                        <div className="text-sm font-black text-secondary">{formatNumber(potato.sellPrice)} 🥔</div>
+                        <div className="text-sm font-black text-secondary">{formatNumber(potato.sellPrice)} {eraInfo.currencyEmoji}</div>
                       </div>
                     </div>
                   </div>
@@ -251,7 +253,7 @@ export default function Shop({ onBack }: ShopProps) {
                             : "bg-red-500/10 text-red-400 border border-red-500/20"
                         )}
                       >
-                        {outOfStockGlobal ? "РАСПРОДАНО" : (override && !override.is_unlimited) ? `(${override.stock} ШТ) ЗА ${formatNumber(buyPrice)} 🥔` : `КУПИТЬ ЗА ${formatNumber(buyPrice)} 🥔`}
+                        {outOfStockGlobal ? "РАСПРОДАНО" : (override && !override.is_unlimited) ? `(${override.stock} ШТ) ЗА ${formatNumber(buyPrice)} ${eraInfo.currencyEmoji}` : `КУПИТЬ ЗА ${formatNumber(buyPrice)} ${eraInfo.currencyEmoji}`}
                     </button>
                   </div>
                 </div>
