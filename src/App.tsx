@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Play, Settings, X, Volume2, Music, Loader2, Home, Package, Store, Wheat, Trophy, Rocket, HelpCircle, Globe, Monitor } from 'lucide-react';
+import { Play, Settings, X, Volume2, Music, Loader2, Home, Package, Store, Wheat, Trophy, Rocket, HelpCircle, Globe } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Shop from './components/Shop';
@@ -102,11 +102,7 @@ export default function App() {
     soundVolume,
     setVolumes,
     rebirths,
-    spaceStation,
-    uiScale,
-    autoScale,
-    setUiScale,
-    setAutoScale
+    spaceStation
   } = useGameStore();
 
   // Audio References
@@ -531,7 +527,6 @@ export default function App() {
 
   // Detect mobile / tablet devices (Android, iOS, iPad, iPhone, etc.)
   const [isMobileDevice, setIsMobileDevice] = useState(false);
-  const [detectedScale, setDetectedScale] = useState(1);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -541,27 +536,10 @@ export default function App() {
       setIsMobileDevice(Boolean(isMobileUA || isTouchAndSmall));
     };
 
-    const updateScale = () => {
-      // Base reference is standard 1080p height (1080px) and width (1920px)
-      // On 2K (1440p) -> scale ~ 1.33, on 4K (2160p) -> scale ~ 2.0
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const scaleByH = h / 950;
-      const scaleByW = w / 1600;
-      const autoComputed = Math.max(0.75, Math.min(2.2, Math.min(scaleByH, scaleByW)));
-      setDetectedScale(autoComputed);
-    };
-
     checkMobile();
-    updateScale();
-
-    window.addEventListener('resize', () => {
-      checkMobile();
-      updateScale();
-    });
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  const effectiveScale = autoScale ? detectedScale : (uiScale / 100);
 
   const handleCloseSettings = () => {
     setIsClosingSettings(true);
@@ -608,8 +586,8 @@ export default function App() {
     if (!showSettings) return null;
 
     return (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md ${isClosingSettings ? 'animate-fade-out-fast' : 'animate-fade-in-fast'}">
-        <div className={`relative bg-[#2c1810] border-4 border-[#4a331f] rounded-2xl p-10 w-112.5 shadow-2xl fill-mode-forwards ${isClosingSettings ? 'animate-slide-down-fast' : 'animate-slide-up-fast'}`}>
+      <div className={`fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md ${isClosingSettings ? 'animate-fade-out-fast' : 'animate-fade-in-fast'}`}>
+        <div className={`relative bg-[#2c1810] border-4 border-[#4a331f] rounded-2xl p-8 sm:p-10 w-full max-w-md max-h-[90vh] overflow-y-auto custom-scrollbar shadow-2xl fill-mode-forwards ${isClosingSettings ? 'animate-slide-down-fast' : 'animate-slide-up-fast'}`}>
           <button 
             onClick={handleCloseSettings}
             className="absolute top-5 right-5 text-white/50 hover:text-white transition-colors cursor-pointer hover:scale-110"
@@ -713,57 +691,6 @@ export default function App() {
                   🇬🇧 English
                 </button>
               </div>
-            </div>
-
-            {/* UI Scaling / 2K & 4K Monitor Support */}
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between text-white text-xl font-bold">
-                <div className="flex items-center gap-3">
-                  <Monitor size={24} className="text-emerald-400 drop-shadow-sm" />
-                  <span>{t('settings.scaleTitle')}</span>
-                </div>
-                <span className="text-emerald-400 drop-shadow-sm font-black">
-                  {Math.round(effectiveScale * 100)}%
-                </span>
-              </div>
-
-              {/* Auto / Manual toggle */}
-              <div className="grid grid-cols-2 gap-3">
-                <button
-                  type="button"
-                  onClick={() => setAutoScale(true)}
-                  className={`py-2.5 px-3 rounded-xl font-bold text-sm border transition-all cursor-pointer ${autoScale ? 'bg-emerald-500/30 text-emerald-200 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-black/40 text-white/50 border-white/10 hover:border-white/20'}`}
-                >
-                  {t('settings.autoScale')}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAutoScale(false)}
-                  className={`py-2.5 px-3 rounded-xl font-bold text-sm border transition-all cursor-pointer ${!autoScale ? 'bg-emerald-500/30 text-emerald-200 border-emerald-400 shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-black/40 text-white/50 border-white/10 hover:border-white/20'}`}
-                >
-                  {t('settings.manualScale')}
-                </button>
-              </div>
-
-              {/* Manual scale slider if auto is disabled */}
-              {!autoScale && (
-                <div className="flex flex-col gap-2 animate-fade-in">
-                  <div className="flex justify-between text-xs text-white/60 font-semibold">
-                    <span>70% (Компактный)</span>
-                    <span>100% (Стандарт)</span>
-                    <span>180% (Большой / 4K)</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="70"
-                    max="180"
-                    step="5"
-                    value={uiScale}
-                    onChange={(e) => setUiScale(Number(e.target.value))}
-                    className="w-full"
-                  />
-                </div>
-              )}
             </div>
 
             <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-3">
@@ -1194,17 +1121,9 @@ export default function App() {
     <>
       {isMobileDevice && <MobileBlockerModal />}
 
-      <div
-        style={{
-          zoom: effectiveScale,
-          minHeight: `${100 / effectiveScale}vh`,
-          minWidth: `${100 / effectiveScale}vw`,
-        }}
-        className="w-full h-full"
-      >
-        {renderContent()}
+      {renderContent()}
 
-        {/* GLOBAL MODALS */}
+      {/* GLOBAL MODALS */}
         {showLeaderboard && <LeaderboardModal onClose={() => setShowLeaderboard(false)} />}
         {showHowToPlay && <HowToPlayModal onClose={() => setShowHowToPlay(false)} />}
         {showChangelog && <ChangelogModal onClose={() => setShowChangelog(false)} />}
@@ -1237,7 +1156,6 @@ export default function App() {
             variant="warning"
           />
         )}
-      </div>
     </>
   );
 }
